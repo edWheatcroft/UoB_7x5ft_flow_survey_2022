@@ -31,3 +31,13 @@ codegen/
 
 # Octave session info
 octave-workspace
+
+
+################### EXCEL ##########################
+
+# Excel temporary files
+~*.xlsx
+
+
+################### PDF ##########################
+bin/
