@@ -50,7 +50,7 @@ for i = 1:length(tmp_res)
 plot(tmp_res(i).ti,tmp_res(i).Vi(:,1))
 end
 xlim([0 3])
-xlabel('time [s]')
+xlabel('Time [s]')
 ylabel('u [m/s]')
 nexttile(2);
 hold on
@@ -58,14 +58,14 @@ for i = 1:length(tmp_res)
 plot(tmp_res(i).ti,tmp_res(i).Vi(:,3))
 end
 xlim([0 3])
-xlabel('time [s]')
+xlabel('Time [s]')
 ylabel('w [m/s]')
 nexttile(3);
 hold on
 for i = 1:length(tmp_res)
 plot(tmp_res(i).ti,vecnorm(tmp_res(i).Vi')')
 end
-xlabel('time [s]')
+xlabel('Time [s]')
 xlim([0 3])
 ylabel('V [m/s]')
 % save to file

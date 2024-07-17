@@ -64,7 +64,7 @@ for i = 1:length(names)
     
     ylabel(Dname(i)+" [\%]")
     if i>2
-    xlabel('$U_p$ [$ms^{-1}$]')
+    xlabel('$U_p$ [m/s]')
     end
     f = gcf;
     ax = gca;

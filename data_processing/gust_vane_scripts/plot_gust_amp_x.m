@@ -32,7 +32,7 @@ for v_i = 1:length(Vs)
     if v_i ==2
     xlabel('Gust Frequency [Hz]')
     end
-    ylabel('$w_g$ [$ms^{-1}$]')
+    ylabel('$w_g$ [m/s]')
     ax.FontSize = 10;
 end
 for i = 1:length(xs)

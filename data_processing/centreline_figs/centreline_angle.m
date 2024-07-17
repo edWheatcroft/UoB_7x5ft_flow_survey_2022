@@ -57,7 +57,7 @@ x_bin = 2.5:2.5:50;
 
 
 ylabel('Pitch [deg]')
-xlabel('$U_p$ [$ms^{-1}$]')
+xlabel('$U_p$ [m/s]')
 
 ax = gca;
 ax.FontSize = 10;
@@ -114,7 +114,7 @@ x_bin = 2.5:2.5:50;
 [total_std] = bin_data([down_x,up_x],[down,up],x_bin,@nanstd);
 
 ylabel('Yaw [deg]')
-xlabel('$U_p$ [$ms^{-1}$]')
+xlabel('$U_p$ [m/s]')
 ax = gca;
 ax.FontSize = 10;
 % grid minor

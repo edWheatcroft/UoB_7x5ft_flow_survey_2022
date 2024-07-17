@@ -57,8 +57,8 @@ disp(pVal)
 
 
 
-ylabel('$U-U_p$ [$ms^{-1}$]')
-xlabel('$U_p$ [$ms^{-1}$]')
+ylabel('$U-U_p$ [m/s]')
+xlabel('$U_p$ [m/s]')
 ax = gca;
 ax.FontSize = 10;
 

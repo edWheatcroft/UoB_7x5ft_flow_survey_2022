@@ -28,7 +28,7 @@ for a_i = 1:length(Amps)
         p.Marker = markers(d_i);
         p.DisplayName = sprintf('$\\theta_t=%.1f$ deg, $t_d=%.0f$s',Amps(a_i),delays(d_i));
         %         p.DisplayName = sprintf('$\\theta_g$ = %.0f deg',Amps(a_i));
-        xlabel('Velocity [$ms^{-1}$]')
+        xlabel('Velocity [m/s]')
         ylabel('RMS$\left(I\right)$ [\%]')
         ax = nexttile(2);
         ax.FontSize = 10;
@@ -37,7 +37,7 @@ for a_i = 1:length(Amps)
         if a_i == 2; p.MarkerFaceColor = p.Color;end;
         p.Marker = markers(d_i);
         p.DisplayName = sprintf('$\\theta_t=%.1f$ deg, $t_d=%.0f$s',Amps(a_i),delays(d_i));
-        xlabel('Velocity [$ms^{-1}$]')
+        xlabel('Velocity [m/s]')
         ylabel('RMS$\left(I_u\right)$ [\%]')
         ax = nexttile(3);
         ax.FontSize = 10;
@@ -46,7 +46,7 @@ for a_i = 1:length(Amps)
         if a_i == 2; p.MarkerFaceColor = p.Color;end;
         p.Marker = markers(d_i);
         p.DisplayName = sprintf('$\\theta_t=%.1f$ deg, $t_d=%.0f$s',Amps(a_i),delays(d_i));
-        xlabel('Velocity [$ms^{-1}$]')
+        xlabel('Velocity [m/s]')
         ylabel('RMS$\left(I_w\right)$ [\%]')
         ylim([0.5,2.5])
     end

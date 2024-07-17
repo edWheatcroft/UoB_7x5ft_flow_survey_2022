@@ -1,4 +1,4 @@
-function c = redblue(n,range,opts)
+function c = redblue(n,opts)
 %REDBLUE    Shades of red and blue color map
 %   REDBLUE(n,range), returns c whichis a nx3 colour map starting at blue,
 %   moving to white, then going to red. The white is centred according to
@@ -12,12 +12,12 @@ function c = redblue(n,range,opts)
 %
 arguments
     n = size(get(gcf,'colormap'),1);
-    range = [0 0.5 1];
+    opts.range = [0 0.5 1];
     opts.start = [1 0 0];
     opts.centre = [1 1 1];
     opts.finish = [0 0 1];
 end
-range = range -range(1);
+range = opts.range - opts.range(1);
 range = range./abs(range(end));
 
 m_split = (range(2)*n);
@@ -38,7 +38,7 @@ else
 end
 
 blues = zeros(m_split,3);
-delta_blue = opts.finish + (opts.centre - opts.finish) * (1-lum_b);
+delta_blue = opts.centre + (opts.finish - opts.centre) * (1-lum_b);
 
 reds = zeros(n_reds,3);
 delta_red = opts.centre + (opts.start - opts.centre) * (1-lum_r);

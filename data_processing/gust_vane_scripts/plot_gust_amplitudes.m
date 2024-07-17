@@ -28,7 +28,7 @@ for v_i = 1:length(Vs)
         p.DisplayName = sprintf('$\\theta_g$ = %.0f deg',Amps(a_i));
     end
     xlabel('Gust Freq. [Hz]')
-    ylabel('$w_g$ [$ms^{-1}$]')
+    ylabel('$w_g$ [m/s]')
     title(sprintf('$U_p$ = %.0f$ ms^{-1}$',Vs(v_i)))
     ylim([0,6])
     ax = gca;

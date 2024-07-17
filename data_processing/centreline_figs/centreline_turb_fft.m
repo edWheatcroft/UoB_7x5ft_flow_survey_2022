@@ -1,5 +1,5 @@
 jobs = [1:3];
-load("..\TimeSeriesData400.mat")
+load("..\TimeSeriesData200.mat")
 final_data = farg.struct.filter(final_data,{{'Job',jobs}});
 c = fh.colors.colorspecer(3,'qual','HighCon');
 
@@ -25,8 +25,8 @@ for i = 1:length(Vs)
 %         Y = tmp_res(j).Vi(:,3)'./vecnorm(tmp_res(j).Vmean');
         Y = detrend(Y,1);
 %         Y = highpass(Y,3,400);
-        [f,Ps(:,j)] = farg.signal.psd(Y,400);
-        title(sprintf('U = %.0f $ms^{-1}$',Vs(i)));
+        [f,Ps(:,j)] = farg.signal.psd(Y,200);
+        title(sprintf('U = %.0f m/s',Vs(i)));
     end
     hold on
     plot(f,mean(Ps,2))

@@ -40,7 +40,7 @@ for a_i = 1:length(amp)
     p.Color = c(a_i,:);
     p.LineWidth = 1.2;
     xlim([0 3])
-    xlabel('time [s]')
+    xlabel('Time [s]')
     ylabel('$\Delta u$ [m/s]')
     nexttile(2);
     hold on
@@ -48,7 +48,7 @@ for a_i = 1:length(amp)
     p.Color = c(a_i,:);
     p.LineWidth = 1.2;
     xlim([0 3])
-    xlabel('time [s]')
+    xlabel('Time [s]')
     ylabel('$\Delta w$ [m/s]')
     nexttile(3);
     hold on
@@ -56,7 +56,7 @@ for a_i = 1:length(amp)
     p.Color = c(a_i,:);
     p.LineWidth = 1.2;
     p.DisplayName = sprintf('%.0f deg',amp(a_i));
-    xlabel('time [s]')
+    xlabel('Time [s]')
     xlim([0 3])
     ylabel('V [m/s]')
 end

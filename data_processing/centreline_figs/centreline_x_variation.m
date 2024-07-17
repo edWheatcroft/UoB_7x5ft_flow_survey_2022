@@ -33,7 +33,7 @@ for j_i = 1:length(jobs)
     p.DisplayName = sprintf('%.0f mm',tmp_res(1).x);
 end
 ylabel('I [\%] [deg]')
-xlabel('$U_p$ [$ms^{-1}$]')
+xlabel('$U_p$ [m/s]')
 
 ax = gca;
 ax.FontSize = 10;
@@ -64,7 +64,7 @@ for j_i = 1:length(jobs)
     p.DisplayName = sprintf('%.0f mm',tmp_res(1).x);
 end
 ylabel('yaw [deg]')
-xlabel('$U_p$ [$ms^{-1}$]')
+xlabel('$U_p$ [m/s]')
 
 ax = gca;
 ax.FontSize = 10;
@@ -100,7 +100,7 @@ lg.FontSize = 10;
 lg.Location = 'northwest';
 grid
 
-ylabel('$U-U_p$ [$ms^{-1}$]')
+ylabel('$U-U_p$ [m/s]')
 
 %% yaw
 nexttile(4)
@@ -127,7 +127,7 @@ for j_i = 1:length(jobs)
     p.DisplayName = sprintf('%.0f mm',tmp_res(1).x);
 end
 ylabel('yaw [deg]')
-xlabel('$U_p$ [$ms^{-1}$]')
+xlabel('$U_p$ [m/s]')
 
 ax = gca;
 ax.FontSize = 10;

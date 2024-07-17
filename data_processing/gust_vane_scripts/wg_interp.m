@@ -9,7 +9,8 @@ if any(V>30)
     V(V>30) = 30;
 end
 % load data
-load('gust_vane_scripts\GustAmpData.mat')
+folder = fileparts(mfilename('fullpath'));
+load(fullfile(folder,'GustAmpData.mat'));
 
 % at each velocity polyfit the change in Amp with gust Freq
 Vs = 15:5:30;

@@ -22,7 +22,7 @@ Zs = Z(:);
 idx = inpolygon(Ys,Zs,nodes(:,1),nodes(:,2));
 
 for i = 1:3
-    tmp_res = farg.struct.filter(final_data,{{'U_inf',{'tol',Vs,1.5}}});
+    tmp_res = farg.struct.filter(final_data,{{'U_inf',{'tol',Vs,1.5}},{'Radius',@(x)abs(x)>0.05}});
     nexttile(i)
     hold on
 
@@ -31,23 +31,25 @@ for i = 1:3
     switch i
         case 1
             val = [tmp_res.Delta_U]';
-            title('$\Delta U$ [$ms^{-1}$]')
+            title('a) $\Delta U$ [$ms^{-1}$]')
         case 2
             val = atan2d([tmp_res.w],[tmp_res.u])';
-            title('Pitch Angle [deg]')
+            title('b) Pitch Angle [deg]')
         case 3
             val = atan2d([tmp_res.v],[tmp_res.u])';
-            title('Yaw Angle [deg]')
+            title('c) Yaw Angle [deg]')
     end
     
     F = scatteredInterpolant(y,z,val,'natural','none');
     val_interp = F(Y,Z);
-    contourf(Y,Z,val_interp,10);
+    [~,p] = contourf(Y,Z,val_interp,20);
+    p.LineStyle = "none";
     
     plot(nodes(:,1),nodes(:,2),'k-')
     
     clim([-2,2])
-    c = fh.colors.cbrewer('div','RdYlBu',3);
+    cs = fh.colors.colorspecer(4,"qual","Colorblind");
+    c = fh.colors.redblue(21,start=cs(1,:),finish=cs(4,:));
 %     cc = fh.colors.redblue(100,[-1,0,1.5],centre=c(2,:));
     colormap(c);
     if i == 3
@@ -69,4 +71,4 @@ for i = 1:3
     ax.XTickLabel = [-1,0,1];
 
 end
-% exportgraphics(gcf,'bin\vol_v.pdf','ContentType','vector');
+exportgraphics(gcf,'bin\vol_v25_roll_fig.pdf','ContentType','vector');
