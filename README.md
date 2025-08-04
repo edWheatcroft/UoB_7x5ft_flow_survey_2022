@@ -1,12 +1,15 @@
 ### Flow Survey of the 7x5ft Wind Tunnel at the UoB
 
-Ed's Comments/thing's I've figured out:
+Ed's Comments/things I've figured out:
  - It seems that data_processing/extract_data.m is expecting a different data format to what we have here.
  - Note that the RunOverview.xlsx contains a list of 'jobs', where each job comprises many rows of SteadyData.mat and TimeSeriesData200.mat.
- - The [u,v,w] system in both SteadyData.mat and TimeSeriesData200.mat seem to align with the [x,y,z] system Fintan uses in the WS calibration Appendix (Fig. A1), based the approximate magnitudes of the numbers vs. what's reported in the Appendix.
+ - The [u,v,w] system in both SteadyData.mat and TimeSeriesData200.mat seem to align with the [x,y,z] system Fintan uses in the WS calibration Appendix (Fig. A1), based on the approximate magnitudes of the numbers vs. what's reported in the Appendix. This is also as per the operations manual Fig. 3.3-1.
     - u = Downstream
-    - v = Toward the glass
+    - v = Toward the glass (see footnote 2, make the system right handed)
     - w = Up
+ - Roll and Radius columns appear to correspond to the position of the cobra probe. The y and z columns imply the following:
+    - Roll = 0 corresponds to the downward vector ([u,v,w] = [0,0,-1]).
+    - Roll is measured about the x-axis in a LEFT-hand screw sense (in keeping with the roll moment in the ops. manual, Fig. 3.3-1).
 
 
 
