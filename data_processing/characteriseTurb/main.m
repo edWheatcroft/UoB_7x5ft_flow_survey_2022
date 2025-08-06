@@ -9,7 +9,7 @@ close all
 dataDir = '..\..\';
 TSname = 'TimeSeriesData200.mat';
 SSname = 'SteadyData.mat';
-jobsToLoad = [1, 2, 3, 12, 13, 14, 15, 25, 26, 27];
+jobsToLoad = [1, 2, 3, 12, 13, 14, 15, 25, 26, 27];     % jobs corresponding to locations/configs we care about.
 
 % flow/geometry parameters
 Upitot = 25;      % m/s
@@ -20,11 +20,11 @@ minZ = -300;
 
 % von Karman Turbulence parameters
 vKmaxFreq = 200;        % Hz
-lengthScalingFactor = 0.05;
+Lchar = 1.7;            % characteristic length in m, 1.7m seems to give a PSDF that matches the median turbulence value...
 
 % plotting parameters
-runToPlot = 20;
-component = 'v';
+runToPlot = 1;          % choose a particular run to focus on when plotting (mainly just provides a comparison to the averages).
+component = 'v';        % component to focus on when plotting
 %%%%%%%%%% END %%%%%%%%%%
 
 % useful stuff
@@ -46,6 +46,7 @@ centreLineKeepMask = cond1' & cond2';
 cond3 = [allTSdat.y] >= minY  &  [allTSdat.y] <= maxY  &  [allTSdat.z] >= minZ;      
 turbineKeepMask = cond1' & cond3';
 
+% create a class instance from the chosen data
 TSdat = timeSeriesData(allTSdat(centreLineKeepMask | turbineKeepMask));
 
 
@@ -53,20 +54,28 @@ TSdat = timeSeriesData(allTSdat(centreLineKeepMask | turbineKeepMask));
 TSdat.computeRMS();
 TSdat.oneSidedSpectra();
 TSdat.computePeakTurbLength();
+TSdat.computeAverages();
 
 lengths = [TSdat.data.turbLength];
 rmses = [TSdat.data.rms];
+thisRunLength = lengths(compMask, runToPlot);
+thisRunRMS = rmses(compMask, runToPlot);
 
-%% calculate the pertinent vK PSDF
-sigLength = length(TSdat.data(runToPlot).ti);
-vKfreqs = linspace(0, vKmaxFreq/2, ceil(sigLength/2));
-Lchar = TSdat.data(runToPlot).turbLength(compMask)*lengthScalingFactor;
-U = TSdat.data(runToPlot).U;
-vRMS = TSdat.data(runToPlot).rms(compMask);
-vKpsdf = vKspec(Lchar, U, vRMS, 2*pi*vKfreqs); 
+%% calculate a vK PSDF based on the user input
+numFreqs = length(TSdat.medians.(component).psdf);
+vKfreqs = linspace(0, vKmaxFreq/2, numFreqs);
+Umedian = TSdat.medians.U;
+vRMSmedian = TSdat.medians.(component).vRMS;
+vKpsdf = vKspec(Lchar, Umedian, vRMSmedian, 2*pi*vKfreqs);
+
+disp(['RMS ', component,' velocity for chosen run: ', num2str(thisRunRMS, 3),' m/s'])
+disp(['scaled ',component,' turbulence length scale for chosen run: ', num2str(thisRunLength, 3), 'm'])
+disp(['mean RMS ', component,' velocity for all runs: ', num2str(TSdat.means.(component).vRMS, 3),' m/s'])
+disp(['median RMS ', component,' velocity for all runs: ', num2str(TSdat.medians.(component).vRMS, 3),' m/s'])
 
 % copmpute a representative time series for this von Karman PSDF
 [vKtimeSer, vKtimes] = psdfToTime(vKpsdf, vKfreqs);
+[medTimeSer, medTimes] = psdfToTime(TSdat.means.(component).psdf, TSdat.medians.(component).fi);
 % for comparison/checking, reconstruct the time series of the actual data from its PSDF
 [vRec, tRec]  = psdfToTime(TSdat.data(runToPlot).psdf(:,compMask), TSdat.data(runToPlot).fi);
 
@@ -80,25 +89,47 @@ ax.FontSize = 12;
 legend
 
 singlePSDF = figure;
-TSdat.plotSpecOne(singlePSDF,runToPlot,'psdf', component)
+TSdat.plotSpecOne(singlePSDF, runToPlot,'psdf', component)
+plot(TSdat.means.(component).fi, TSdat.means.(component).psdf,  'displayname', 'Mean PSDF')
+plot(TSdat.medians.(component).fi, TSdat.medians.(component).psdf, 'displayname', 'Median PSDF')
+xline(TSdat.medians.(component).fPeak, 'DisplayName',['Peak Median ', component])
 plot(vKfreqs, vKpsdf, 'DisplayName', 'von Karman PSDF')
 title('Power Spectral Density Function')
 ylabel('Velocity PSDF [$(\mathrm{m/s})^2/\mathrm{Hz}$]')
 ax = gca;
 ax.FontSize = 12;
+ax.YScale = 'log';
+ylim([1e-5 1e-1])
 legend
 
+
 tSeriesFig = figure;
-hold on
-a = plot(TSdat.data(runToPlot).ti, TSdat.data(runToPlot).Vinc(:,compMask), 'DisplayName', 'Original Velocity Data');
-% plot(tRec, vRec, 'DisplayName', 'Reconstructed Velocity Data')
+tl = tiledlayout(3,1);
+nexttile
+plot(TSdat.data(runToPlot).ti, TSdat.data(runToPlot).Vinc(:,compMask), 'DisplayName', ['Run ', num2str(runToPlot),' Velocity Data']);
 yline(TSdat.data(runToPlot).rms(compMask), '--', 'DisplayName', 'RMS')
-plot(vKtimes, vKtimeSer, 'displayname', 'Representative von Karman Time Series')
-xlabel('Time [s]')
-ylabel('Velocity [m/s]')
 ax = gca;
 ax.FontSize = 12;
+ylim([-0.75 0.75])
 legend()
+
+nexttile
+plot(medTimes, medTimeSer, 'displayname', 'Representative Median PSDF Time Series')
+ax = gca;
+ax.FontSize = 12;
+ylim([-0.75 0.75])
+legend()
+
+nexttile
+plot(vKtimes, vKtimeSer, 'displayname', 'Representative von Karman Time Series')
+ax = gca;
+ax.FontSize = 12;
+ylim([-0.75 0.75])
+legend()
+
+xlabel(tl,'Time [s]', 'interpreter', 'latex', 'fontsize', 12)
+ylabel(tl,'Velocity [m/s]', 'interpreter', 'latex', 'fontsize', 12)
+title(tl,'Representative Time Series Data', 'Interpreter','latex', 'FontSize',12)
 
 
 lengthSurf = figure;

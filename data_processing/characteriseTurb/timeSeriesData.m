@@ -3,6 +3,8 @@ classdef timeSeriesData < handle
     properties
         data
         numJobs
+        means
+        medians
     end
 
 
@@ -62,6 +64,52 @@ classdef timeSeriesData < handle
             end
         end
 
+        function computeAverages(obj)
+            %% function to compute the mean and median PSDFs over all runs
+            
+            % get all the data in one place and extract some basic info
+            allPsdfs = [obj.data.psdf];
+            comps = {'u', 'v', 'w'};
+            nComps = length(comps);
+            masks = logical(eye(3));
+            freqs = obj.data(1).fi;
+
+            % compute the mean freestream velocities so we can compute a turbulence length scale...
+            allUs = [obj.data.U];
+            obj.means.U = mean(allUs);
+            obj.medians.U = median(allUs);
+
+            % loop over the components.
+            for i = 1:nComps
+                % pick out the PSDFs for this component and compute the averages over all psdfs at each frequency
+                mask = repmat(masks(i,:), 1, obj.numJobs);
+                componentPsdfs = allPsdfs(:,mask);
+                medianPsdf = median(componentPsdfs, 2);     % using dim = 2 specifies to average over all runs at each freq...
+                meanPsdf = mean(componentPsdfs, 2);
+
+                % write the results for the mean...
+                comp = comps{mask};
+                obj.means.(comp).psdf = meanPsdf;
+                obj.means.(comp).fi = freqs;
+                obj.means.(comp).vRMS = sqrt(trapz(freqs, meanPsdf));   % compute an RMS velocity based on the integral of the average psdf. This will be a different number to the average of all the individually computed RMSes
+                [~, peakDex] = max(meanPsdf,[],1);
+                obj.means.(comp).fPeak = freqs(peakDex);
+                obj.means.(comp).turbLength = obj.means.U/obj.means.(comp).fPeak;
+
+                %...and for the median.
+                obj.medians.(comp).psdf = medianPsdf;
+                obj.medians.(comp).fi = freqs;
+                obj.medians.(comp).vRMS = sqrt(trapz(freqs, medianPsdf));
+                [~, peakDex] = max(medianPsdf,[],1);
+                obj.medians.(comp).fPeak = freqs(peakDex);
+                obj.medians.(comp).turbLength = obj.medians.U/obj.medians.(comp).fPeak;
+
+            end
+
+
+
+        end
+
 
         function plotSpecOne(obj, fig, runID, type, component)
             %% plot the one sided spectrum for a given run. Type is a field of obj.data pertaining to either the field or power spectrum
@@ -71,16 +119,16 @@ classdef timeSeriesData < handle
             spec = obj.data(runID).(type);
             freqs = obj.data(runID).fi;
             if compMask(1)
-                plot(freqs, spec(:,1),'DisplayName','u')
-                xline(obj.data(runID).U/obj.data(runID).turbLength(1),'label','u', 'handlevisibility','off')
+                plot(freqs, spec(:,1),'DisplayName',['u - Run ', num2str(runID)])
+                % xline(obj.data(runID).U/obj.data(runID).turbLength(1),'label',['Peak u - Run ', num2str(runID)], 'handlevisibility','off')
             end
             if compMask(2)
-                plot(freqs, spec(:,2),'DisplayName','v')
-                xline(obj.data(runID).U/obj.data(runID).turbLength(2),'label','v', 'handlevisibility','off')
+                plot(freqs, spec(:,2),'DisplayName',['v - Run ', num2str(runID)])
+                % xline(obj.data(runID).U/obj.data(runID).turbLength(2),'label',['Peak v - Run ', num2str(runID)], 'handlevisibility','off')
             end
             if compMask(3)
-                plot(freqs, spec(:,3),'DisplayName','w')
-                xline(obj.data(runID).U/obj.data(runID).turbLength(3),'label','w', 'handlevisibility','off')
+                plot(freqs, spec(:,3),'DisplayName',['w - Run ', num2str(runID)])
+                % xline(obj.data(runID).U/obj.data(runID).turbLength(3),'label',['Peak w - Run ', num2str(runID)], 'handlevisibility','off')
             end
 
             xlim([0 50])
